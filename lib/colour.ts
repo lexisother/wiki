@@ -3,7 +3,7 @@ import { floatBetween } from './helpers';
 // NOTE: Some old crap code. Refactor, maybe?
 
 // hsv here is 360, 1.0, 1.0
-function hsvToRgb(h, s, v) {
+function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
   let c = s * v;
   let temp = h / 60;
   let x = c * (1 - Math.abs((temp % 2) - 1));
@@ -45,7 +45,7 @@ function hsvToRgb(h, s, v) {
   return [r, g, b];
 }
 
-function rgbToHsv(r, g, b) {
+function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
   r = r / 255;
   g = g / 255;
   b = b / 255;
@@ -76,27 +76,27 @@ function rgbToHsv(r, g, b) {
   return [h, s, v];
 }
 
-function fromHexNotation(hex) {
+function fromHexNotation(hex: string): [number, number, number] {
   if (hex.startsWith('#')) {
-    hex = hex.substr(1);
+    hex = hex.substring(1);
   }
-  let r = parseInt(hex.substr(0, 2), 16);
-  let g = parseInt(hex.substr(2, 2), 16);
-  let b = parseInt(hex.substr(4, 2), 16);
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 2), 16);
+  let b = parseInt(hex.substring(4, 2), 16);
   return [r, g, b];
 }
 
-function toHexNotation(r, g, b) {
+function toHexNotation(r: any, g: any, b: any) {
   r = '00' + Math.floor(r * 255).toString(16);
-  r = r.substr(r.length - 2, 2);
+  r = r.substring(r.length - 2, 2);
   g = '00' + Math.floor(g * 255).toString(16);
-  g = g.substr(g.length - 2, 2);
+  g = g.substring(g.length - 2, 2);
   b = '00' + Math.floor(b * 255).toString(16);
-  b = b.substr(b.length - 2, 2);
+  b = b.substring(b.length - 2, 2);
   return '#' + r + g + b;
 }
 
-function randomPrimary() {
+function randomPrimary(): [number, number, number] {
   // let h = ((Math.random() * 240) + 340) % 360
   let h = (Math.random() * 200 + 20) % 360;
   let s = floatBetween(0.1, 0.4);
@@ -104,7 +104,7 @@ function randomPrimary() {
   return [h, s, v];
 }
 
-function generateFullScheme(h, s, v) {
+function generateFullScheme(h: number, s: number, v: number) {
   let prim = toHexNotation(...hsvToRgb(h, s, v));
 
   let hintV = v + 0.6;
@@ -124,7 +124,7 @@ function generateFullScheme(h, s, v) {
   return { prim, hint, grime, wall };
 }
 
-function variation(h, s, v) {
+function variation(h: number, s: number, v: number): [number, number, number] {
   h += Math.floor(floatBetween(0, 40));
   s += floatBetween(0, 0.05);
   v += floatBetween(0, 0.05);
@@ -138,6 +138,6 @@ export function randomScheme() {
   return generateFullScheme(...randomPrimary());
 }
 
-export function schemeFromHex(hex) {
+export function schemeFromHex(hex: string) {
   return generateFullScheme(...variation(...rgbToHsv(...fromHexNotation(hex))));
 }
