@@ -87,7 +87,7 @@ function zigzagCurtains() {
   }
   let reversed = Math.floor(Math.random() * 2) === 1;
   return (grimer: (grimer: string) => string) => {
-    let returnString = grimeString(zag.substring(i, 10), grimer);
+    let returnString = grimeString(zag.substr(i, 10), grimer);
     if (dir) {
       i -= 1;
       if (i <= 0) dir = false;

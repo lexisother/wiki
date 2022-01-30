@@ -19,13 +19,13 @@ export function randomGrimer() {
 }
 
 function unstableGrimes(number: number): string {
-  return grimeTable[number].substring(Math.floor(Math.random() * grimeTable[number].length), 1);
+  return grimeTable[number].substr(Math.floor(Math.random() * grimeTable[number].length), 1);
 }
 
 function stableGrimes() {
   let localTable: string[] = [];
   for (let i = 0; i < 10; i++) {
-    localTable.push(grimeTable[i].substring(Math.floor(Math.random() * grimeTable[i].length), 1));
+    localTable.push(grimeTable[i].substr(Math.floor(Math.random() * grimeTable[i].length), 1));
   }
   return (num: number) => {
     return localTable[num];
@@ -35,7 +35,7 @@ function stableGrimes() {
 export function grimeString(string: string, grimer: (string: string) => string) {
   let out = '';
   for (let i = 0; i < string.length; i++) {
-    out += grimer(string.substring(i, 1));
+    out += grimer(string.substr(i, 1));
   }
   return out;
 }

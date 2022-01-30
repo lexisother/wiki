@@ -129,7 +129,7 @@ export default class Projector {
     let ack = '';
     let which = 'nada';
     while (pos < 40) {
-      let next = row.substring(pos, 1);
+      let next = row.substr(pos, 1);
       if (pos === 0) which = this.tokenType(next);
       if (this.tokenType(next) !== which && next !== '_') {
         tokens.push({ token: ack, which });

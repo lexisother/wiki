@@ -76,11 +76,11 @@ function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
 
 function fromHexNotation(hex: string): [number, number, number] {
   if (hex.startsWith('#')) {
-    hex = hex.substring(1);
+    hex = hex.substr(1);
   }
-  let r = parseInt(hex.substring(0, 2), 16);
-  let g = parseInt(hex.substring(2, 2), 16);
-  let b = parseInt(hex.substring(4, 2), 16);
+  let r = parseInt(hex.substr(0, 2), 16);
+  let g = parseInt(hex.substr(2, 2), 16);
+  let b = parseInt(hex.substr(4, 2), 16);
   return [r, g, b];
 }
 
@@ -90,11 +90,11 @@ function toHexNotation(r: number, g: number, b: number) {
   let gnew: string;
   let bnew: string;
   rnew = '00' + Math.floor(r * 255).toString(16);
-  rnew = rnew.substring(rnew.length, 2);
+  rnew = rnew.substr(rnew.length -2, 2);
   gnew = '00' + Math.floor(g * 255).toString(16);
-  gnew = gnew.substring(gnew.length, 2);
+  gnew = gnew.substr(gnew.length - 2, 2);
   bnew = '00' + Math.floor(b * 255).toString(16);
-  bnew = bnew.substring(bnew.length, 2);
+  bnew = bnew.substr(bnew.length - 2, 2);
   return '#' + rnew + gnew + bnew;
 }
 

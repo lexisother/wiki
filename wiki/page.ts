@@ -50,10 +50,10 @@ export default class Page {
       }
 
       while (row.length > 40) {
-        let reasonableBreakingPlace = row.substring(0, 40).lastIndexOf(' ');
-        textRows.push(row.substring(0, reasonableBreakingPlace));
+        let reasonableBreakingPlace = row.substr(0, 40).lastIndexOf(' ');
+        textRows.push(row.substr(0, reasonableBreakingPlace));
         rowNumber++;
-        row = row.substring(reasonableBreakingPlace + 1);
+        row = row.substr(reasonableBreakingPlace + 1);
       }
       textRows.push(row);
       rowNumber++;

@@ -9,7 +9,7 @@ function lowercase(text: string): string {
 }
 
 function titlecase(text: string): string {
-  return text.charAt(0).toUpperCase() + text.substring(1).toLowerCase();
+  return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
 }
 
 function dice(text: string): string {
