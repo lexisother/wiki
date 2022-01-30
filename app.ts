@@ -10,8 +10,8 @@ const PORT = 7004;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../static')));
-app.engine('hbs', engine());
-app.set('view engine', 'hbs');
+app.engine('handlebars', engine({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
 const server = app.listen(
   PORT,
@@ -45,6 +45,8 @@ app.use((request, _response, next) => {
   console.log(request.url);
   next();
 });
+
+app.use('/', require('./routes/index.js').default);
 
 app.use((_request, response, _next) => {
   response.status(404).send('404 lmao');

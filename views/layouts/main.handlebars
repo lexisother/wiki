@@ -1,15 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-
+{{#each secrets}}<!-- {{this}} -->
+{{/each}}<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Express TypeScript</title>
+    <meta charset="utf-8">
+    {{#if title}}
+      <title>{{title}}</title>
+      <meta property="og:title" content="{{title}}" />
+    {{else}}
+      <title>dreamwiki!</title>
+      <meta property="og:title" content="dreamwiki!" />
+    {{/if}}
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://wiki.alyxia.dev/og.png" />
+    <meta property="og:url" content="https://wiki.alyxia.dev/{{filename}}/" />
+    <style>
+      body {
+        background-color:{{ colour.wall }};
+        position: relative;
+        font-family: 'Courier New', Courier, monospace;
+        color: {{ colour.prim }};
+        font-size: 15px;
+      }
+      pre {
+        margin:0 auto;
+        display:block;
+        width:700px;
+        text-align:center;
+      }
+      .grime {
+        color:{{ colour.grime }};
+      }
+      a:link, a:visited {
+        color:{{ colour.hint }};
+        text-decoration:none;
+      }
+      a.link:link, a.link:visited {
+        color:#fff;
+        text-decoration:none;
+      }
+      a:hover, a:active {
+        color:{{ colour.grime }} !important;
+        background: none !important;
+      }
+    </style>
 </head>
-
 <body>
+    <main>
     {{{body}}}
+    <br style="clear:both;" />
+    </main>
+    <script>
+      // i am terribly sorry for running code in your browser :(
+      let main = document.querySelector('main')
+      let dreamHeight = main.clientHeight
+      let eyeHeight = document.documentElement.clientHeight
+      if (dreamHeight < (eyeHeight - 40)) {
+        let prism = (eyeHeight - dreamHeight) / 2
+        main.style.marginTop = `${prism}px`
+      }
+    </script>
 </body>
-
 </html>

@@ -21,14 +21,18 @@ router.route('/:dreamfile/:link').all((req, res) => {
   return res.redirect('/' + desiredPage + '/');
 });
 
+export default router;
+
 async function pagefuck(req: Request, res: Response) {
   if (req.url.includes('..')) return req.next!();
   if (req.url.includes('.') && !req.url.includes('.dream')) return req.next!();
 
+  // first of all, this is important bc of the url scheme
   if (!req.url.endsWith('/')) return res.redirect(req.url + '/');
 
   let dreamfile = 'welcome.dream';
   if (req.params.dreamfile) {
+    // better security checks here later!
     if (req.params.dreamfile.endsWith('.dream')) {
       dreamfile = req.params.dreamfile;
     } else if (linkExists(req.params.dreamfile)) {
@@ -39,16 +43,14 @@ async function pagefuck(req: Request, res: Response) {
     }
   }
 
-  let pagetext = await fs
-    .readFile(path.join(__dirname, '../book' + dreamfile), 'utf8')
-    .catch((err) => {
-      if (err.errno === -2) {
-        res.redirect('/fourohfour.dream/');
-      } else {
-        console.error(err);
-        res.status(500).send('500 somehow');
-      }
-    });
+  let pagetext = await fs.readFile('./book/' + dreamfile, 'utf8').catch((err) => {
+    if (err.errno === -2) {
+      res.redirect('/fourohfour.dream/');
+    } else {
+      console.error(err);
+      res.status(500).send('500 somehow');
+    }
+  });
   if (pagetext === undefined) return;
 
   let page = Page.readFromPage(pagetext, dreamfile);
@@ -70,7 +72,7 @@ function linkExists(word: string) {
   return true;
 }
 
-function findLink(link: string, verboten?: string): string {
+function findLink(link: string, verboten?: string) {
   let candidates = global.allLinks[link.toLowerCase()];
   console.log('findlink', link, 'from', verboten, 'candidates', candidates);
   if (candidates.length === 1 && candidates[0] == verboten) {
