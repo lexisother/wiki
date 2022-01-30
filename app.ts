@@ -3,13 +3,13 @@ import express, { Request, Response, NextFunction } from 'express';
 import { engine } from 'express-handlebars';
 import fs from 'fs/promises';
 import path from 'path';
+import Transpiler from './wiki/transpiler';
 
 const PORT = 7004;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../public')));
-console.log(path.join(__dirname, '../public'));
+app.use(express.static(path.join(__dirname, '../static')));
 app.engine('hbs', engine());
 app.set('view engine', 'hbs');
 
@@ -22,7 +22,7 @@ const jsonColdStorage = ['complete', 'completeKeyed', 'allLinks', 'allTags', 'st
 let needsUpdate = false;
 let index = 0;
 jsonColdStorage.forEach(async (variable) => {
-  let filename = `../static/${variable}.json`;
+  let filename = path.join(__dirname, `../static/${variable}.json`);
   await fs
     .readFile(filename, 'utf8')
     .then((text) => {
@@ -35,7 +35,8 @@ jsonColdStorage.forEach(async (variable) => {
       needsUpdate = true;
     });
   if (needsUpdate && index === jsonColdStorage.length - 1) {
-    // TODO: run transpiler
+    let transpiler = new Transpiler();
+    transpiler.parseBooks();
   }
   index++;
 });
