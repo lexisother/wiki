@@ -1,7 +1,5 @@
 import { floatBetween } from './helpers';
 
-// NOTE: Some old crap code. Refactor, maybe?
-
 // hsv here is 360, 1.0, 1.0
 function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
   let c = s * v;
@@ -86,14 +84,18 @@ function fromHexNotation(hex: string): [number, number, number] {
   return [r, g, b];
 }
 
-function toHexNotation(r: any, g: any, b: any) {
-  r = '00' + Math.floor(r * 255).toString(16);
-  r = r.substring(r.length - 2, 2);
-  g = '00' + Math.floor(g * 255).toString(16);
-  g = g.substring(g.length - 2, 2);
-  b = '00' + Math.floor(b * 255).toString(16);
-  b = b.substring(b.length - 2, 2);
-  return '#' + r + g + b;
+function toHexNotation(r: number, g: number, b: number) {
+  console.log(r, g, b);
+  let rnew: string;
+  let gnew: string;
+  let bnew: string;
+  rnew = '00' + Math.floor(r * 255).toString(16);
+  rnew = rnew.substring(rnew.length, 2);
+  gnew = '00' + Math.floor(g * 255).toString(16);
+  gnew = gnew.substring(gnew.length, 2);
+  bnew = '00' + Math.floor(b * 255).toString(16);
+  bnew = bnew.substring(bnew.length, 2);
+  return '#' + rnew + gnew + bnew;
 }
 
 function randomPrimary(): [number, number, number] {

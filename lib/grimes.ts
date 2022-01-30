@@ -3,8 +3,8 @@ import { choice } from './helpers';
 // must be up here due to the order things are used
 var grimeTable = [
   '#', // 0
-  '##@',
-  '##@@£¶',
+  '##@', // 1
+  '##@@£¶', // 2
   '#@£§&¤', // 3
   '@££$$§%%&*¤',
   '%%§$=†**^', // 5
@@ -27,8 +27,8 @@ function stableGrimes() {
   for (let i = 0; i < 10; i++) {
     localTable.push(grimeTable[i].substring(Math.floor(Math.random() * grimeTable[i].length), 1));
   }
-  return (number: number) => {
-    return localTable[number];
+  return (num: number) => {
+    return localTable[num];
   };
 }
 

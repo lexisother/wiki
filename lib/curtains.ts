@@ -1,6 +1,5 @@
 import { grimeString } from './grimes';
-import { choice, randomBinary } from './helpers';
-import { iterate, ruleForInt, translate } from './cellular';
+import { choice } from './helpers';
 
 export interface Curtain {
   left: string;
@@ -16,8 +15,6 @@ export function curtainsFor(key: string) {
     return reversedGlowCurtains;
   } else if (key === 'zigzag') {
     return zigzagCurtains();
-  } else if (key === 'automata') {
-    return cellularCurtains();
   } else if (key === 'random') {
     return randomCurtains();
   }
@@ -27,14 +24,7 @@ export function curtainsFor(key: string) {
 }
 
 function randomCurtains() {
-  return choice([
-    glowCurtains,
-    reversedGlowCurtains,
-    zigzagCurtains(),
-    zigzagCurtains(),
-    cellularCurtains(),
-    cellularCurtains(),
-  ]);
+  return choice([glowCurtains, reversedGlowCurtains, zigzagCurtains(), zigzagCurtains()]);
 }
 
 function glowCurtains(grimer: (digit: number) => string) {
@@ -109,20 +99,5 @@ function zigzagCurtains() {
     let rev = returnString.split('').reverse().join('');
     if (reversed) return { left: rev, right: returnString };
     return { left: returnString, right: rev };
-  };
-}
-
-function cellularCurtains() {
-  let ruleNumber = choice([60, 102, 99, 26, 129]); // nice rules for 1D automata
-  let rule = ruleForInt(ruleNumber);
-  let length = 40 + 2 + 20; // text area + padding + curtain width
-  let state = randomBinary(length); // start seed
-  return (grimer: (grimer: string) => string) => {
-    state = iterate(state, rule);
-    let dreamified = translate(state, [9, 3]);
-    return {
-      left: grimeString(dreamified.slice(0, 10), grimer),
-      right: grimeString(dreamified.slice(-10), grimer),
-    };
   };
 }

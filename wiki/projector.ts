@@ -33,6 +33,10 @@ export default class Projector {
     this.justifier = justifierFor('auto');
     this.caps = capsFor('random');
     this.colourScheme = randomScheme();
+
+    this.runCommandsForRow(0);
+
+    this.render();
   }
 
   render() {
@@ -65,7 +69,7 @@ export default class Projector {
     this.output = output;
   }
 
-  public runCommandsForRow(row: number) {
+  runCommandsForRow(row: number) {
     this.page.commandRows
       .filter((command) => command.row === row)
       .forEach((command) => {
@@ -76,7 +80,10 @@ export default class Projector {
           this.curtains = curtainsFor(command.params);
         }
         if (command.command === 'justify' || command.command === 'align') {
-          this.justifier = capsFor(command.params);
+          this.justifier = justifierFor(command.params);
+        }
+        if (command.command === 'caps') {
+          this.caps = capsFor(command.params);
         }
         if (command.command === 'colour') {
           this.colourScheme = schemeFromHex(command.params);
@@ -87,15 +94,15 @@ export default class Projector {
       });
   }
 
-  public decorateRow(row: string) {
+  decorateRow(row: string) {
     let tokens = this.findTokens(row);
     let rowout = '';
     tokens.forEach((token) => {
-      if (token.type === 'etc') {
+      if (token.which === 'etc') {
         rowout += token.token;
         return;
       }
-      if (token.type === 'grime') {
+      if (token.which === 'grime') {
         rowout += '<span class="grime">' + token.token + '</span>';
         return;
       }
@@ -104,7 +111,7 @@ export default class Projector {
       let capsOrNot = '';
       let tokenDisplay = token.token.replace(/_/g, ' ');
       tokenDisplay = this.caps(tokenDisplay);
-      if (token.type === 'uppercase') {
+      if (token.which === 'uppercase') {
         capsOrNot = 'class="link"';
       }
       if (wordlink) {
@@ -116,40 +123,40 @@ export default class Projector {
     });
     return rowout;
   }
-
-  public findTokens(row: string) {
+  findTokens(row: string) {
     let pos = 0;
     let tokens = [];
     let ack = '';
-    let type = 'nada';
+    let which = 'nada';
     while (pos < 40) {
       let next = row.substring(pos, 1);
-      if (pos === 0) type = this.tokenType(next);
-      if (this.tokenType(next) !== type && next !== '_') {
-        tokens.push({ token: ack, type });
-        type = this.tokenType(next);
+      if (pos === 0) which = this.tokenType(next);
+      if (this.tokenType(next) !== which && next !== '_') {
+        tokens.push({ token: ack, which });
+        which = this.tokenType(next);
         ack = '';
       }
-      if (type === 'grime') {
-        /// @ts-expect-error Let's hope this goes well!
-        ack += this.grimer(next);
+      if (which === 'grime') {
+        console.log(`DEBUG: GRIME FOUND!!!! ${next} (NUM: ${Number(next)}) | ${ack}`);
+        ack += this.grimer(Number(next));
+        console.log(`DEBUG: ${which} PUSHED THROUGH GRIMER, RESULT: ${this.grimer(Number(next))}`);
       } else {
         ack += next;
       }
       pos += 1;
     }
-    tokens.push({ token: ack, type });
+    tokens.push({ token: ack, which });
     return tokens;
   }
 
-  public tokenType(letter: string): string {
+  tokenType(letter: string) {
     if (letter.match(/[0-9]/)) return 'grime';
     if (letter.match(/[a-z_]/)) return 'lowercase';
-    if (letter.match(/[A-Z]/)) return 'uppercase';
+    if (letter.match(/[A-Z_]/)) return 'uppercase';
     return 'etc';
   }
 
-  public linkExists(word: string, filename: string) {
+  linkExists(word: string, filename: string) {
     if (!global.allLinks[word.toLowerCase()]) return false;
     if (
       filename &&
