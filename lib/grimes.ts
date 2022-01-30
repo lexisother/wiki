@@ -18,7 +18,7 @@ export function randomGrimer() {
   return choice([unstableGrimes, stableGrimes()]);
 }
 
-function unstableGrimes(number: number) {
+function unstableGrimes(number: number): string {
   return grimeTable[number].substring(Math.floor(Math.random() * grimeTable[number].length), 1);
 }
 

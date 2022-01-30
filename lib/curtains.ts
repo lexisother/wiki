@@ -2,7 +2,7 @@ import { grimeString } from './grimes';
 import { choice, randomBinary } from './helpers';
 import { iterate, ruleForInt, translate } from './cellular';
 
-interface Curtain {
+export interface Curtain {
   left: string;
   right: string;
 }
@@ -37,7 +37,7 @@ function randomCurtains() {
   ]);
 }
 
-function glowCurtains(grimer: (digit: number) => Curtain) {
+function glowCurtains(grimer: (digit: number) => string) {
   let bias = Math.floor(Math.random() * 5) - 1;
   let right = '';
   for (let i = 0; i < 10; i++) {
@@ -55,7 +55,7 @@ function glowCurtains(grimer: (digit: number) => Curtain) {
   return { left, right };
 }
 
-function reversedGlowCurtains(grimer: (digit: number) => Curtain) {
+function reversedGlowCurtains(grimer: (digit: number) => string) {
   let c = glowCurtains(grimer);
   return { left: c.right, right: c.left };
 }
