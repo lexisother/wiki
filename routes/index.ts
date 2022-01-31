@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import fs from 'fs/promises';
-import path from 'path';
 import { choice } from '../lib/helpers';
 import Page from '../wiki/page';
 import Projector from '../wiki/projector';

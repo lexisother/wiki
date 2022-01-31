@@ -85,12 +85,11 @@ function fromHexNotation(hex: string): [number, number, number] {
 }
 
 function toHexNotation(r: number, g: number, b: number) {
-  console.log(r, g, b);
   let rnew: string;
   let gnew: string;
   let bnew: string;
   rnew = '00' + Math.floor(r * 255).toString(16);
-  rnew = rnew.substr(rnew.length -2, 2);
+  rnew = rnew.substr(rnew.length - 2, 2);
   gnew = '00' + Math.floor(g * 255).toString(16);
   gnew = gnew.substr(gnew.length - 2, 2);
   bnew = '00' + Math.floor(b * 255).toString(16);

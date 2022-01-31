@@ -46,6 +46,7 @@ app.use((request, _response, next) => {
   next();
 });
 
+app.use('/', require('./routes/stats.js').default);
 app.use('/', require('./routes/index.js').default);
 
 app.use((_request, response, _next) => {
@@ -61,9 +62,9 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 
 // Handling terminate gracefully
 process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received.'); // tslint:disable-line
-  console.log('Closing Express Server'); // tslint:disable-line
+  console.log('SIGTERM signal received.');
+  console.log('Closing Express Server');
   server.close(() => {
-    console.log('Express server closed.'); // tslint:disable-line
+    console.log('Express server closed.');
   });
 });

@@ -25,6 +25,21 @@ declare global {
   var allLinks: { [tag: string]: [string] };
   var allTags: { [tag: string]: [string] };
   var todos: { filename: string; todos: string[] }[];
+  var stats: {
+    tagReaches: {
+      tag: string;
+      reach: number;
+      real: boolean;
+    }[];
+    linksFired: {
+      link: string;
+      intensity: number;
+      real: boolean;
+    }[];
+    time: number;
+    time2: number;
+    fractions: { key: string; in: number; out: number; real: boolean }[];
+  };
 }
 
 export default class Transpiler {
@@ -189,6 +204,96 @@ export default class Transpiler {
       );
       fs.writeFile(path.join(__dirname, '../../static/todos.json'), JSON.stringify(todos), 'utf8');
       console.log('transpiler done!');
+
+      // stats
+
+      let allIncoming: string[] = [];
+      let allOutgoing: string[] = [];
+      global.complete.forEach((page) => {
+        page.incoming.forEach((tag) => {
+          if (!allIncoming.includes(tag)) allIncoming.push(tag);
+        });
+        page.outgoing.forEach((link) => {
+          if (!allOutgoing.includes(link)) allOutgoing.push(link);
+        });
+      });
+
+      let tagReaches: { tag: string; reach: number; real: boolean }[] = [];
+      let tagReachesLookup: Map<string, number> = new Map();
+      allIncoming.forEach((tag) => {
+        let reach = 0;
+        global.complete.forEach((page) => {
+          if (page.incoming.includes(tag)) reach++;
+        });
+        let real = allOutgoing.includes(tag);
+        tagReaches.push({ tag, reach, real });
+        tagReachesLookup.set(tag, reach);
+      });
+      tagReaches.sort((a, b) => b.reach - a.reach);
+
+      let linksFired: { link: string; intensity: number; real: boolean }[] = [];
+      let linksFiredLookup: { [link: string]: number } = {};
+      allOutgoing.forEach((link) => {
+        let intensity = 0;
+        global.complete.forEach((page) => {
+          if (page.outgoing.includes(link)) intensity++;
+        });
+        let real = allIncoming.includes(link);
+        linksFired.push({ link, intensity, real });
+        linksFiredLookup[link] = intensity;
+      });
+      linksFired.sort((a, b) => b.intensity - a.intensity);
+
+      let allKeywords: string[] = [];
+      books.forEach((book) => {
+        book.incoming.forEach((tag) => {
+          if (!allKeywords.includes(tag)) allKeywords.push(tag);
+        });
+        book.outgoing.forEach((link) => {
+          if (!allKeywords.includes(link)) allKeywords.push(link);
+        });
+      });
+      let fractions: { key: string; in: number; out: number; real: boolean }[] = [];
+      allKeywords.forEach((key) => {
+        let ob = { key, in: 0, out: 0, real: true };
+        if (linksFiredLookup[key] && typeof linksFiredLookup[key] === 'number')
+          ob.out = linksFiredLookup[key]; // wtf
+        if (tagReachesLookup.get(key) && typeof tagReachesLookup.get(key) === 'number')
+          ob.in = tagReachesLookup.get(key)!;
+        if (ob.in === 0 || ob.out === 0) ob.real = false;
+        fractions.push(ob);
+      });
+      fractions.sort((a, b) => {
+        // div b y zero checks
+        if (b.out === 0) {
+          if (a.out === 0) {
+            // if both have zero links, order by who has the most links anyway
+            return b.in - a.in;
+          }
+          return 1; // b divides by zero, deffo bigger than a
+        } else if (a.out === 0) {
+          return -1; // a deffo bigger than b, and we do b - a
+        }
+
+        // if both have 0 incoming, order by reverse outgoing i guess?
+        if (b.in === 0 && a.in === 0) {
+          return a.out - b.out; // not sure
+        }
+
+        // otherwise do the fractions!
+        return b.in / b.out - a.in / a.out;
+      });
+
+      let timeEnd2 = new Date().getTime();
+      let time2 = timeEnd2 - timeEnd;
+
+      global.stats = { tagReaches, linksFired, time, time2, fractions };
+      fs.writeFile(
+        path.join(__dirname, '../../static/stats.json'),
+        JSON.stringify(global.stats),
+        'utf8',
+      );
+      console.log('transpiler stats done!');
     });
   }
 

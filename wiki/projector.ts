@@ -137,9 +137,7 @@ export default class Projector {
         ack = '';
       }
       if (which === 'grime') {
-        console.log(`DEBUG: GRIME FOUND!!!! ${next} (NUM: ${Number(next)}) | ${ack}`);
         ack += this.grimer(Number(next));
-        console.log(`DEBUG: ${which} PUSHED THROUGH GRIMER, RESULT: ${this.grimer(Number(next))}`);
       } else {
         ack += next;
       }
